@@ -3,31 +3,6 @@
 -mode(compile).
 -export([main/1]).
 
-%% Checklist
-%% * Set the nodes to "performance" governor mode
-%% * Clean any interface rules (tc clean)
-%% * Separate in database and client nodes
-%% For database nodes:
-%%   * download
-%%   * compile
-%%   * start
-%%   * join
-%% For client nodes:
-%%   * download
-%%   * compile
-%%   * configure latency rules
-%%   * load machine
-%%   * run with appropriate config file
-%%   * verify run.config file is correct (shasum)
-%%   * collect data into folder
-
-%% Info needed: clusters needed
-%%  * how many (and which) database machines
-%%  * how many (and which) client machines
-%%  * restart and verify that antidote boots
-%%  * probably need a timer for antidote to join correctly
-%%  * If timer fires, cancel everything and retry
-
 %% Example configuration file:
 %% ```cluster.config:
 %% {latencies, #{
@@ -46,13 +21,13 @@
 %% }}.
 %% ```
 
--define(IN_NODES_PATH,
-        "/Users/ryan/dev/imdea/code/lasp-bench/grid_tests/scripts/apollo/execute-in-nodes.sh").
-
+-define(SELF_DIR, "/Users/ryan/dev/imdea/code/lasp-bench/grid_tests/scripts").
 -define(SSH_PRIV_KEY, "/Users/ryan/.ssh/imdea_id_ed25519").
--define(APOLLO_DIR, "/Users/ryan/dev/imdea/code/lasp-bench/grid_tests/scripts/apollo").
 
--define(ANTIDOTE_BRANCH, "pvc-fix-vclock").
+-define(IN_NODES_PATH, unicode:characters_to_list(io_lib:format("~s/execute-in-nodes.sh", [?SELF_DIR]))).
+-define(CONFIG_DIR, unicode:characters_to_list(io_lib:format("~s/configuration", [?SELF_DIR]))).
+
+-define(ANTIDOTE_BRANCH, "pvc").
 -define(LASP_BENCH_BRANCH, "coord").
 
 -define(COMMANDS, [ {check, false}
@@ -136,7 +111,7 @@ do_command(load, _, ClusterMap) ->
 
 do_command(bench, _, ClusterMap) ->
     NodeNames = client_nodes(ClusterMap),
-    pmap(fun(Node) -> transfer_to(Node, "run.config") end, NodeNames),
+    pmap(fun(Node) -> transfer_config(Node, "run.config") end, NodeNames),
     do_in_nodes_par(client_command("run", "/home/borja.deregil/run.config"), NodeNames),
     ok;
 
@@ -196,9 +171,9 @@ check_nodes(ClusterMap) ->
     % Transfer antidote, bench and cluster config
     io:format("Transfering benchmark config files (antidote, bench, cluster)...~n"),
     pmap(fun(Node) ->
-        transfer_to(Node, "antidote.sh"),
-        transfer_to(Node, "bench.sh"),
-        transfer_to(Node, "cluster.config")
+        transfer_script(Node, "antidote.sh"),
+        transfer_script(Node, "bench.sh"),
+        transfer_config(Node, "cluster.config")
     end, AllNodes),
     ok.
 
@@ -243,10 +218,17 @@ client_command(Command, Arg) ->
 client_command(Command, Arg1, Arg2) ->
     io_lib:format("./bench.sh -b ~s ~s ~s ~s", [?LASP_BENCH_BRANCH, Command, Arg1, Arg2]).
 
-transfer_to(Node, ApolloFile) ->
+transfer_script(Node, File) ->
+    transfer_from(Node, ?SELF_DIR, File).
+
+transfer_config(Node, File) ->
+    transfer_from(Node, ?CONFIG_DIR, File).
+
+transfer_from(Node, Path, File) ->
     Cmd = io_lib:format(
-        "scp -i ~s ~s/~s borja.deregil@~s:/home/borja.deregil",
-        [?SSH_PRIV_KEY, ?APOLLO_DIR, ApolloFile, atom_to_list(Node)]),
+        "scp -i ~s ~s/~s borja.deregil@~s:/home/borja.deregi",
+        [?SSH_PRIV_KEY, Path, File, atom_to_list(Node)]
+    ),
     safe_cmd(Cmd).
 
 all_nodes(Map) ->
