@@ -106,7 +106,8 @@ do_command(join, _, ClusterMap) ->
 
 do_command(load, _, ClusterMap) ->
     NodeNames = client_nodes(ClusterMap),
-    io:format("~p~n", [do_in_nodes_seq(client_command("-y load"), [hd(NodeNames)])]),
+    TargetNode = hd(server_nodes(ClusterMap)),
+    io:format("~p~n", [do_in_nodes_seq(client_command("-y load", atom_to_list(TargetNode)), [hd(NodeNames)])]),
     ok;
 
 do_command(bench, _, ClusterMap) ->

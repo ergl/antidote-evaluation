@@ -50,7 +50,7 @@ get_total_data <- function(Dir) {
     summary <- read.csv(sprintf("%s/summary.csv", Dir))
 
     latencies_rw <- read.csv(sprintf("%s/readwrite_latencies.csv", Dir))
-    # latencies_ronly <- read.csv(sprintf("%s/readonly_latencies.csv", Dir))
+    latencies_ronly <- read.csv(sprintf("%s/readonly_latencies.csv", Dir))
 
     # Remove first row, as it is usually inflated
     summary <- summary[-c(1), ]
@@ -72,14 +72,15 @@ get_total_data <- function(Dir) {
     commit_ratio <- (sum(summary$successful) / sum(summary$total))
 
     mean_latency_rw <- mean(latencies_rw$mean) / 1000
-    # mean_latency_ronly <- mean(latencies_ronly$mean) / 1000
+    mean_latency_ronly <- mean(latencies_ronly$mean) / 1000
 
 
     return(data.frame(max_total_w,
                       max_commit_w,
                       median_commit_w,
                       commit_ratio,
-                      mean_latency_rw))
+                      mean_latency_rw,
+                      mean_latency_ronly))
 }
 
 format_data <- function(Dir, Data) {
@@ -89,16 +90,15 @@ format_data <- function(Dir, Data) {
 
     thread_info <- get_client_threads(Dir)
     num_partitions <- as.integer(str_extract(str_extract(Dir, "ring=[0-9]+"), "[0-9]+"))
-    versions <- str_extract(str_extract(Dir, "vsn=[0-9]+-[0-9]+"), "[0-9]+-[0-9]+")
+    versions <- str_extract(str_extract(Dir, "vsn=[0-9]+"), "[0-9]+")
 
     format <- sprintf(
-        "|%s|%s|%s (%s)|%s|%s|%f|%f|\n",
-        num_partitions,
-        versions,
+        "|%s (%s)|%s|%s|%f|%f|%f|\n",
         format_decimal(thread_info$per_machine, withoutZeros=TRUE),
         format_decimal(thread_info$total, withoutZeros=TRUE),
         format_decimal(Data$max_total_w),
         format_decimal(Data$max_commit_w),
+        Data$mean_latency_ronly,
         Data$mean_latency_rw,
         Data$commit_ratio
     )
