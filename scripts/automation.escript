@@ -226,7 +226,7 @@ transfer_config(Node, File) ->
 
 transfer_from(Node, Path, File) ->
     Cmd = io_lib:format(
-        "scp -i ~s ~s/~s borja.deregil@~s:/home/borja.deregi",
+        "scp -i ~s ~s/~s borja.deregil@~s:/home/borja.deregil",
         [?SSH_PRIV_KEY, Path, File, atom_to_list(Node)]
     ),
     safe_cmd(Cmd).
