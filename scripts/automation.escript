@@ -189,16 +189,16 @@ prepare_lasp_bench(ClusterMap) ->
     NodeNames = client_nodes(ClusterMap),
     io:format("~p~n", [do_in_nodes_par(client_command("dl"), NodeNames)]),
     _ = do_in_nodes_par(client_command("compile"), NodeNames),
-    ok = maps:fold(fun(ClusterName, #{clients := ClusterClients}, _Acc) ->
-        io:format(
-            "~p~n",
-            [do_in_nodes_par(
-                client_command("tc", atom_to_list(ClusterName), "/home/borja.deregil/cluster.config"),
-                ClusterClients)
-            ]
-        ),
-        ok
-    end, ok, ClusterMap),
+    % ok = maps:fold(fun(ClusterName, #{clients := ClusterClients}, _Acc) ->
+    %     io:format(
+    %         "~p~n",
+    %         [do_in_nodes_par(
+    %             client_command("tc", atom_to_list(ClusterName), "/home/borja.deregil/cluster.config"),
+    %             ClusterClients)
+    %         ]
+    %     ),
+    %     ok
+    % end, ok, ClusterMap),
     ok.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
