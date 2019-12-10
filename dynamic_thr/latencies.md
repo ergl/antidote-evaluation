@@ -2,6 +2,10 @@
 
 ## Workload B, 90/10
 
+For this experiment, we fix everything and vary the number of sites
+
+### Sites = 1
+
 Ring=32
 Vsn=500-250
 R=4 & R/W 3/1
