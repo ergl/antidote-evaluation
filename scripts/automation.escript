@@ -38,6 +38,7 @@
                   , {start, false}
                   , {stop, false}
                   , {join, false}
+                  , {prepare, false}
 
                   , {load, false}
                   , {bench, false}
@@ -98,6 +99,10 @@ do_command(start, _, ClusterMap) ->
 do_command(stop, _, ClusterMap) ->
     do_in_nodes_par(server_command("stop"), server_nodes(ClusterMap)),
     ok;
+
+do_command(prepare, Arg, ClusterMap) ->
+    ok = do_command(join, Arg, ClusterMap),
+    ok = do_command(load, Arg, ClusterMap);
 
 do_command(join, _, ClusterMap) ->
     NodeNames = server_nodes(ClusterMap),
