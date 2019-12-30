@@ -30,6 +30,8 @@
 -define(ANTIDOTE_BRANCH, "pvc").
 -define(LASP_BENCH_BRANCH, "coord").
 
+-define(JOIN_TIMEOUT, timer:minutes(5)).
+
 -define(COMMANDS, [ {check, false}
                   , {antidote, false}
                   , {clients, false}
@@ -106,8 +108,25 @@ do_command(prepare, Arg, ClusterMap) ->
 
 do_command(join, _, ClusterMap) ->
     NodeNames = server_nodes(ClusterMap),
-    io:format("~p~n", [do_in_nodes_seq(server_command("join", "/home/borja.deregil/cluster.config"), [hd(NodeNames)])]),
-    ok;
+    Parent = self(),
+    Reference = erlang:make_ref(),
+    ChildFun = fun() ->
+        Reply = do_in_nodes_seq(server_command("join", "/home/borja.deregil/cluster.config"), [hd(NodeNames)]),
+        Parent ! {Reference, Reply}
+    end,
+    Start = erlang:timestamp(),
+    ChildPid = erlang:spawn(ChildFun),
+    receive
+        {Reference, Reply} ->
+            End = erlang:timestamp(),
+            io:format("~p~n", [Reply]),
+            io:format("Ring done after ~p~n", [timer:now_diff(End, Start)]),
+            ok
+    after ?JOIN_TIMEOUT ->
+        io:fwrite(standard_error, "Ring timed out after ~b milis~n", [?JOIN_TIMEOUT]),
+        erlang:exit(ChildPid, kill),
+        error
+    end;
 
 do_command(load, _, ClusterMap) ->
     NodeNames = client_nodes(ClusterMap),
