@@ -92,7 +92,9 @@ do_command(clients, _, ClusterMap) -> ok = prepare_lasp_bench(ClusterMap);
 do_command(prologue, _, ClusterMap) ->
     ok = check_nodes(ClusterMap),
     ok = prepare_antidote(ClusterMap),
-    ok = prepare_lasp_bench(ClusterMap);
+    ok = prepare_lasp_bench(ClusterMap),
+    alert("Prologue finished!"),
+    ok;
 
 do_command(start, _, ClusterMap) ->
     do_in_nodes_par(server_command("start"), server_nodes(ClusterMap)),
@@ -104,7 +106,9 @@ do_command(stop, _, ClusterMap) ->
 
 do_command(prepare, Arg, ClusterMap) ->
     ok = do_command(join, Arg, ClusterMap),
-    ok = do_command(load, Arg, ClusterMap);
+    ok = do_command(load, Arg, ClusterMap),
+    alert("Prepare finished!"),
+    ok;
 
 do_command(join, _, ClusterMap) ->
     NodeNames = server_nodes(ClusterMap),
