@@ -138,6 +138,7 @@ do_command(bench, _, ClusterMap) ->
     NodeNames = client_nodes(ClusterMap),
     pmap(fun(Node) -> transfer_config(Node, "run.config") end, NodeNames),
     do_in_nodes_par(client_command("run", "/home/borja.deregil/run.config"), NodeNames),
+    alert("Benchmark finished!"),
     ok;
 
 do_command(stats, _, ClusterMap) ->
@@ -304,6 +305,12 @@ pmap(F, L) ->
     L2 = [receive {pmap, N, R} -> {N,R} end || _ <- L],
     L3 = lists:keysort(1, L2),
     [R || {_,R} <- L3].
+
+% Alert user with sound when benchmark is finished
+alert(Msg) ->
+    safe_cmd(io_lib:format("osascript -e 'display notification with title \"~s\"'", [Msg])),
+    safe_cmd("afplay /System/Library/Sounds/Glass.aiff"),
+    ok.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% getopt
