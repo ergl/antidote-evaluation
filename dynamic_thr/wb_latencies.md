@@ -12,9 +12,13 @@ For this experiment, we fix the number of sites, and vary the workload type
 
 ## Workload B, 80/20
 
-| Prot | Clients (Total) | Max Throughput | Max Commit | Ronly Lat (Mean) | RW Latency (Mean) | Commit Ratio |
-| :--: | :-------------: | :------------: | :--------: | :--------------: | :---------------: | :----------: |
-| SER  |
+| Prot | Clients (Total) | Max Throughput | Max Commit  | Ronly Lat (Mean) | RW Latency (Mean) | Commit Ratio |
+| :--: | :-------------: | :------------: | :---------: | :--------------: | :---------------: | :----------: |
+| SER  |   250 (3,000)   |  16,021.4817   | 10,175.8897 |    70.679628     |     57.010680     |   0.634628   |
+| SER  |   500 (6,000)   |  28,458.5472   | 14,462.4867 |    71.944251     |     58.049356     |   0.508022   |
+| SER  | 1,000 (12,000)  |  77,564.2877   | 27,499.2419 |    70.835677     |     57.292449     |   0.361219   |
+| SER  | 2,000 (24,000)  |  128,689.5743  | 36,810.6883 |    74.911995     |     59.945146     |   0.293788   |
+| SER  | 3,000 (36,000)  |  142,959.5430  | 35,178.9648 |    83.657225     |     66.586600     |   0.243479   |
 
 | Prot | Clients (Total) | Max Throughput |  Max Commit  | Ronly Lat (Mean) | RW Latency (Mean) | Commit Ratio |
 | :--: | :-------------: | :------------: | :----------: | :--------------: | :---------------: | :----------: |
