@@ -88,20 +88,35 @@ format_data <- function(Dir, Data) {
         return(formatC(string, format="f", big.mark=",", drop0trailing=withoutZeros))
     }
 
+    protocol_name <- toupper(str_extract(str_extract(Dir, "prot=[a-z]+"), "[a-z]+$"))
     thread_info <- get_client_threads(Dir)
     num_partitions <- as.integer(str_extract(str_extract(Dir, "ring=[0-9]+"), "[0-9]+"))
     versions <- str_extract(str_extract(Dir, "vsn=[0-9]+"), "[0-9]+")
 
-    format <- sprintf(
-        "|%s (%s)|%s|%s|%f|%f|%f|\n",
-        format_decimal(thread_info$per_machine, withoutZeros=TRUE),
-        format_decimal(thread_info$total, withoutZeros=TRUE),
-        format_decimal(Data$max_total_w),
-        format_decimal(Data$max_commit_w),
-        Data$mean_latency_ronly,
-        Data$mean_latency_rw,
-        Data$commit_ratio
-    )
+    if (protocol_name == "RC") {
+        # If read committed, don't include commit ratio, it's always 1
+        format <- sprintf(
+            "|%s|%s (%s)|%s|%f|%f|\n",
+            protocol_name,
+            format_decimal(thread_info$per_machine, withoutZeros=TRUE),
+            format_decimal(thread_info$total, withoutZeros=TRUE),
+            format_decimal(Data$max_total_w),
+            Data$mean_latency_ronly,
+            Data$mean_latency_rw
+        )
+    } else {
+        format <- sprintf(
+            "|%s|%s (%s)|%s|%s|%f|%f|%f|\n",
+            protocol_name,
+            format_decimal(thread_info$per_machine, withoutZeros=TRUE),
+            format_decimal(thread_info$total, withoutZeros=TRUE),
+            format_decimal(Data$max_total_w),
+            format_decimal(Data$max_commit_w),
+            Data$mean_latency_ronly,
+            Data$mean_latency_rw,
+            Data$commit_ratio
+        )
+    }
 
     cat(format)
 }
