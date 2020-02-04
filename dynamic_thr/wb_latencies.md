@@ -26,6 +26,18 @@
 |    RC    |    70/30 |            1,003,586.5394 |
 |    RC    |    50/50 |              930,069.6112 |
 
+## Note on SER throughput
+
+I noticed that changing the amount of writes not only does _not_ decrease the throughput, it actually slightly increases. After thinking about it, I came to the conclusion that it's to be expected. On SER, both read-only and update transactions go through the 2pc path, although they have slightly different conflict detection checks. This means that the commit latency for both should be `~~about~~` the same. Since on Workload B update transactions have less reads, overall their latency should be lower than read-only transactions, since they perform less round-trips. Also, since we don't fix the number of transactions in a benchmark, and use a time-based approach, it means that by increasing the number of update transactions we are able to fit more of them in the same time range (since their latency is lower). Thus, this is reflected in the results. To test this:
+
+| R/W Ratio | Commit Throughput | Commit Ratio |
+| --------: | ----------------: | -----------: |
+|     90/10 |       35,472.0000 |     0.274029 |
+|     80/20 |       36,810.6883 |     0.293788 |
+|     70/30 |       38,441.2538 |     0.303421 |
+|     50/50 |       42,073.0000 |     0.329188 |
+|     10/90 |       51,343.7545 |     0.412513 |
+
 ## Sites = 3
 
 Ring=64
@@ -36,19 +48,27 @@ Latency=10ms
 
 For this experiment, we fix the number of sites, and vary the workload type
 
+## Workload B, 10/90
+
+| Prot | Clients (Total) | Max Throughput | Max Commit  | Ronly Lat (Mean) | RW Latency (Mean) | Commit Ratio |
+| :--: | :-------------: | :------------: | :---------: | :--------------: | :---------------: | :----------: |
+| SER  | 2,000 (24,000)  |  127,495.1042  | 51,343.7545 |    83.580492     |     67.547825     |   0.412513   |
+
 ## Workload B, 90/10
 
 Repeat (even if done already in [sites_latencies.md](./sites_latencies.md)),
 because SER looks wonky (the only protocol that increases throughput with more writes).
 
-| Prot | Clients (Total) | Max Throughput | Max Commit  | Ronly Lat (Mean) | RW Latency (Mean) | Commit Ratio |
-| :--: | :-------------: | :------------: | :---------: | :--------------: | :---------------: | :----------: |
-| SER  | 1,750 (21,000)  |  118,682.5579  | 35,377.6094 |    72.465533     |     57.929348     |   0.295872   |
-| SER  | 1,875 (22,500)  |  123,407.8710  | 35,138.7493 |    72.411997     |     57.959536     |   0.282837   |
-| SER  | 2,000 (24,000)  |  126,548.5340  | 35,381.0886 |    72.940423     |     58.421026     |   0.272989   |
-| SER  | 2,250 (27,000)  |  124,758.9673  | 34,864.0406 |    76.218041     |     60.863711     |   0.277122   |
-| SER  | 2,500 (30,000)  |  132,722.4023  | 34,540.1714 |    79.352443     |     63.070154     |   0.259345   |
-| SER  | 3,000 (36,000)  |  145,905.1005  | 34,148.9063 |    81.206621     |     64.661159     |   0.232045   |
+| Prot | Clients (Total)  | Max Throughput | Max Commit  | Ronly Lat (Mean) | RW Latency (Mean) | Commit Ratio |
+| :--: | :--------------: | :------------: | :---------: | :--------------: | :---------------: | :----------: |
+| SER  |  1,750 (21,000)  |  118,682.5579  | 35,377.6094 |    72.465533     |     57.929348     |   0.295872   |
+| SER  |  1,875 (22,500)  |  123,407.8710  | 35,138.7493 |    72.411997     |     57.959536     |   0.282837   |
+| SER  |  2,000 (24,000)  |  126,548.5340  | 35,381.0886 |    72.940423     |     58.421026     |   0.272989   |
+| SER  | 2,000-1 (24,000) |  127,971.8607  | 35,289.2588 |    72.664254     |     58.200318     |   0.271350   |
+| SER  | 2,000-2 (24,000) |  126,981.8730  | 35,472.0000 |    73.080439     |     58.505284     |   0.274029   |
+| SER  |  2,250 (27,000)  |  124,758.9673  | 34,864.0406 |    76.218041     |     60.863711     |   0.277122   |
+| SER  |  2,500 (30,000)  |  132,722.4023  | 34,540.1714 |    79.352443     |     63.070154     |   0.259345   |
+| SER  |  3,000 (36,000)  |  145,905.1005  | 34,148.9063 |    81.206621     |     64.661159     |   0.232045   |
 
 ## Workload B, 80/20
 
@@ -59,6 +79,7 @@ because SER looks wonky (the only protocol that increases throughput with more w
 | SER  |  1,000 (12,000)  |  77,564.2877   | 27,499.2419 |    70.835677     |     57.292449     |   0.361219   |
 | SER  |  2,000 (24,000)  |  128,689.5743  | 36,810.6883 |    74.911995     |     59.945146     |   0.293788   |
 | SER  | 2,000-1 (24,000) |  128,963.0328  | 36,772.8501 |    74.733187     |     59.811318     |   0.291900   |
+| SER  | 2,000-2 (24,000) |  128,602.2603  | 37,050.6887 |    74.944659     |     59.967497     |   0.292894   |
 | SER  |  3,000 (36,000)  |  142,959.5430  | 35,178.9648 |    83.657225     |     66.586600     |   0.243479   |
 
 | Prot | Clients (Total) | Max Throughput |  Max Commit  | Ronly Lat (Mean) | RW Latency (Mean) | Commit Ratio |
