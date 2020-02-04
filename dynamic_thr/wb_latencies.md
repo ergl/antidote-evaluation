@@ -36,6 +36,20 @@ Latency=10ms
 
 For this experiment, we fix the number of sites, and vary the workload type
 
+## Workload B, 90/10
+
+Repeat (even if done already in [sites_latencies.md](./sites_latencies.md)),
+because SER looks wonky (the only protocol that increases throughput with more writes).
+
+| Prot | Clients (Total) | Max Throughput | Max Commit  | Ronly Lat (Mean) | RW Latency (Mean) | Commit Ratio |
+| :--: | :-------------: | :------------: | :---------: | :--------------: | :---------------: | :----------: |
+| SER  | 1,750 (21,000)  |  118,682.5579  | 35,377.6094 |    72.465533     |     57.929348     |   0.295872   |
+| SER  | 1,875 (22,500)  |  123,407.8710  | 35,138.7493 |    72.411997     |     57.959536     |   0.282837   |
+| SER  | 2,000 (24,000)  |  126,548.5340  | 35,381.0886 |    72.940423     |     58.421026     |   0.272989   |
+| SER  | 2,250 (27,000)  |  124,758.9673  | 34,864.0406 |    76.218041     |     60.863711     |   0.277122   |
+| SER  | 2,500 (30,000)  |  132,722.4023  | 34,540.1714 |    79.352443     |     63.070154     |   0.259345   |
+| SER  | 3,000 (36,000)  |  145,905.1005  | 34,148.9063 |    81.206621     |     64.661159     |   0.232045   |
+
 ## Workload B, 80/20
 
 | Prot | Clients (Total) | Max Throughput | Max Commit  | Ronly Lat (Mean) | RW Latency (Mean) | Commit Ratio |
