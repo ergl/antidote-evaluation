@@ -49,8 +49,9 @@ get_client_threads <- function(Dir) {
 get_total_data <- function(Dir) {
     summary <- read.csv(sprintf("%s/summary.csv", Dir))
 
-    latencies_rw <- read.csv(sprintf("%s/readwrite_latencies.csv", Dir))
+    latencies_rw <- read.csv(sprintf("%s/readwrite_track_latencies.csv", Dir))
     latencies_ronly <- read.csv(sprintf("%s/readonly_latencies.csv", Dir))
+    latencies_rw_commit <- read.csv(sprintf("%s/readwrite_track_commit_latencies.csv", Dir))
 
     # Remove first row, as it is usually inflated
     summary <- summary[-c(1), ]
@@ -73,6 +74,7 @@ get_total_data <- function(Dir) {
 
     mean_latency_rw <- mean(latencies_rw$mean) / 1000
     mean_latency_ronly <- mean(latencies_ronly$mean) / 1000
+    mean_latency_rw_commit <- mean(latencies_rw_commit$mean) / 1000
 
 
     return(data.frame(max_total_w,
@@ -80,6 +82,7 @@ get_total_data <- function(Dir) {
                       median_commit_w,
                       commit_ratio,
                       mean_latency_rw,
+                      mean_latency_rw_commit,
                       mean_latency_ronly))
 }
 
@@ -96,17 +99,18 @@ format_data <- function(Dir, Data) {
     if (protocol_name == "RC") {
         # If read committed, don't include commit ratio, it's always 1
         format <- sprintf(
-            "|%s|%s (%s)|%s|%f|%f|\n",
+            "|%s|%s (%s)|%s|%f|%f|%f|\n",
             protocol_name,
             format_decimal(thread_info$per_machine, withoutZeros=TRUE),
             format_decimal(thread_info$total, withoutZeros=TRUE),
             format_decimal(Data$max_total_w),
             Data$mean_latency_ronly,
-            Data$mean_latency_rw
+            Data$mean_latency_rw,
+            Data$mean_latency_rw_commit
         )
     } else {
         format <- sprintf(
-            "|%s|%s (%s)|%s|%s|%f|%f|%f|\n",
+            "|%s|%s (%s)|%s|%s|%f|%f|%f|%f|\n",
             protocol_name,
             format_decimal(thread_info$per_machine, withoutZeros=TRUE),
             format_decimal(thread_info$total, withoutZeros=TRUE),
@@ -114,6 +118,7 @@ format_data <- function(Dir, Data) {
             format_decimal(Data$max_commit_w),
             Data$mean_latency_ronly,
             Data$mean_latency_rw,
+            Data$mean_latency_rw_commit,
             Data$commit_ratio
         )
     }
