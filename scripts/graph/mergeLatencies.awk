@@ -57,7 +57,12 @@ END {
     for (k = 1; k <= filecount; k++) {
       weighted_avg = weighted_avg + (means[i, k, 0] * means[i, k, 1])
     }
-    weighted_avg = weighted_avg / total_n[i]
+
+    if (total_n[i] != 0 ) {
+      weighted_avg = weighted_avg / total_n[i]
+    } else {
+      weighted_avg = 0
+    }
 
     # print elapsed, window, n and min
     for (j = 1; j <= 4; j++) {
