@@ -78,8 +78,8 @@ d <- ggplot(df) +
 
           axis.title.x = element_text(size=12, margin=margin(10,0,10,0)),
           axis.title.y = element_text(size=10, margin=margin(0,0,0,10)),
-          axis.text.x =  element_text(size=9, margin=margin(40,0,-20,0)),
-          axis.text.y =  element_text(size=9, margin=margin(0,8,0,3)),
+          axis.text.x =  element_text(color="black", size=9, margin=margin(40,0,-20,0)),
+          axis.text.y =  element_text(color="black", size=9, margin=margin(0,8,0,3)),
           axis.line =    element_line(color="black", size=0.5),
           axis.ticks.y =   element_line(color="black"),
 
@@ -90,6 +90,7 @@ d <- ggplot(df) +
 
           panel.grid.minor.y = element_line(colour="#EBEBEB", size=0.5),
           panel.grid.major.y = element_line(colour="#EBEBEB", size=0.5),
+        #   Remove x grid lines
           panel.grid.major.x = element_blank(),
           panel.grid.minor.x = element_blank(),
           panel.spacing =    unit(1, "lines"),
@@ -111,7 +112,7 @@ easy_annotation <- function(text, x, y) {
     return(annotation_custom(grob=text, xmin=x, xmax=x, ymin=y, ymax=y))
 }
 
-ann_color <- "#4D4D4D"
+ann_color <- "black"
 ser_ann <- textGrob(label="naiveSER", rot=-45, gp=gpar(fontsize=7, col=ann_color))
 psi_ann <- textGrob(label="fastPSI", rot=-45, gp=gpar(fontsize=7, col=ann_color))
 rc_ann <- textGrob(label="naiveRC", rot=-45, gp=gpar(fontsize=7, col=ann_color))
