@@ -97,6 +97,7 @@ d <- ggplot(df) +
     theme_minimal(base_size=10) +
 
     theme(plot.title =      element_text(size=13, margin=margin(10,0,10,0), hjust=0.5),
+          plot.margin = margin(0,10,0,0),
 
           axis.title.x = element_text(size=12, margin=margin(10,0,10,0)),
           axis.title.y = element_text(size=12, margin=margin(0,10,0,10)),
