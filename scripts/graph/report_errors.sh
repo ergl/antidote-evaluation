@@ -34,7 +34,7 @@ report_errors() {
     read_aborts=$(grep "report_total_errors.*maxvc_bad_vc" "${folder}"/${glob}/console.log\
                     | awk '{print $NF}'\
                     | paste -sd+ -\
-                    | bc)
+                    | bc || echo 0)
 
     # shellcheck disable=SC2086
     ronly_read_aborts=$(grep "report_total_errors.*readonly.*maxvc_bad_vc" "${folder}"/${glob}/console.log\
@@ -54,12 +54,13 @@ report_errors() {
     commit_aborts=$((total_errors - read_aborts))
     commit_abort_rate=$(bc -l <<< "${commit_aborts}"/"${total_errors}")
 
-    LC_NUMERIC=en_US printf "Total errors: %'.f; of which read aborts %'.f and %'.f commit aborts (%'.f in readonly, %'.f in readwrite)\n"\
+    LC_NUMERIC=en_US printf "Total errors: %'.f; of which read aborts %'.f and %'.f commit aborts (%'.f read aborts in readonly, %'.f read aborts in readwrite)\n"\
                             "${total_errors}" "${read_aborts}" "${commit_aborts}" "${ronly_read_aborts}" "${rwrite_read_aborts}"
 
-    echo "Abort rates:"
+    echo "Total abort rates (during reads | during commit):"
     LC_NUMERIC=en_US printf "|%'.6f|%'.6f|\n" "${read_abort_rate}" "${commit_abort_rate}"
-    LC_NUMERIC=en_US printf "In readonly: %'.6f || In readwrite: %'.6f\n" "${ronly_read_abort_rate}" "${rwrite_read_abort_rate}"
+    echo "Read abort rates (in read-only tx | in update tx):"
+    LC_NUMERIC=en_US printf "|%'.6f|%'.6f|\n" "${ronly_read_abort_rate}" "${rwrite_read_abort_rate}"
 }
 
 usage() {
