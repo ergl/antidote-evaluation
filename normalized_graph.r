@@ -22,10 +22,6 @@ sites_format <- function(x) {
     return(paste(format(x), "Sites", sep=" "))
 }
 
-thousand_comma_format <- function(x) {
-    return(format(x, big.mark = ",", scientific = FALSE))
-}
-
 workload_format <- function(x) {
     return(format(x/100))
 }
