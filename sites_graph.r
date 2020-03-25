@@ -50,7 +50,7 @@ d <- ggplot(df) +
     # # Assign colors, shapes and lines to each grouping
     aes(x=sites, y=throughput, fill=protocol) +
 
-    geom_bar(width=0.8, position="dodge2", stat="identity") +
+    geom_bar(colour="black", size=0.25, width=0.8, position="dodge2", stat="identity") +
 
     scale_x_continuous(breaks=1:3,
                        labels=x_format,
