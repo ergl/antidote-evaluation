@@ -12,9 +12,9 @@ for(p in packages.to.install) {
 # TODO: Revisit this one and the other of read aborts following the style of Eiger.
 # With lines and dots we can use log scale on the Y axis, but not with geom_bar
 
-df <- read.csv("./read_aborts/psi_read_abort.csv")
+df <- read.csv("../../read_aborts/psi_read_abort.csv")
 
-pdf(file = "psi_read_abort_bench.pdf", width = 15, height = 4)
+pdf(file = "./out/psi_read_abort_bench.pdf", width = 15, height = 4)
 
 partitions <- ggplot(df[df$exp == "p", ]) +
     geom_bar(aes(x=factor(ring), y=(1-commit_r)), colour="black", size=0.25, width=0.8, position="dodge2", stat="identity") +

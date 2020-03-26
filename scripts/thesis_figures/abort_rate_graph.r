@@ -9,7 +9,7 @@ for(p in packages.to.install) {
     }
 }
 
-df <- read.csv("./read_aborts/abort_comparison.csv")
+df <- read.csv("../../read_aborts/abort_comparison.csv")
 df <- df[df$workload != "a", ]
 df$protocol_numeric[df$protocol == "ser"] <- 0
 df$protocol_numeric[df$protocol == "psi"] <- 1
@@ -146,7 +146,7 @@ combined_d <- grid.arrange(gt_d, gt_d_2pc, nrow=2, heights=c(5,5))
 combined_e <- grid.arrange(gt_e, gt_e_2pc, nrow=2, heights=c(5,5))
 combined <- grid.arrange(combined_d, combined_e, ncol=2, widths=c(5,5))
 
-ggsave(filename = "abort_rate_bench.pdf",
+ggsave(filename = "./out/abort_rate_bench.pdf",
        plot = combined,
        device = "pdf",
        width = 5,

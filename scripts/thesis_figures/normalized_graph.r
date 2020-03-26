@@ -16,7 +16,7 @@ for(p in packages.to.install) {
     }
 }
 
-df <- read.csv("./dynamic_thr/dynamic_bench.csv")
+df <- read.csv("../../dynamic_thr/dynamic_bench.csv")
 
 sites_format <- function(x) {
     return(paste(format(x), "Sites", sep=" "))
@@ -174,7 +174,7 @@ combined <- grid.arrange(combined_legend,
                          nrow=2,
                          heights=c(1,10))
 
-ggsave(filename = "dynamic_bench.pdf",
+ggsave(filename = "./out/dynamic_bench.pdf",
        plot = combined,
        device = "pdf",
        width = 5,

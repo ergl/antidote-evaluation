@@ -16,7 +16,7 @@ for(p in packages.to.install) {
     }
 }
 
-df <- read.csv("./general/general.csv")
+df <- read.csv("../../general/general.csv")
 
 x_format_thousand_comma <- function(x) {
     return(format(x/1000, big.mark = ",", scientific = FALSE))
@@ -123,7 +123,7 @@ d <- ggplot(df) +
           legend.box.just =       "left",
           legend.box.background = element_rect(color="white", fill="white"))
 
-ggsave(filename = "general_bench.pdf",
+ggsave(filename = "./out/general_bench.pdf",
        plot = d,
        device = "pdf",
        width = 12,

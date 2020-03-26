@@ -16,7 +16,7 @@ for(p in packages.to.install) {
     }
 }
 
-df <- read.csv("./dynamic_thr/vary_sites_90pp.csv")
+df <- read.csv("../../dynamic_thr/vary_sites_90pp.csv")
 # Manually reorder protocols
 df$protocol <- factor(df$protocol, levels=c("ser", "psi", "rc"))
 
@@ -133,7 +133,7 @@ d <- d +
 gt <- ggplot_gtable(ggplot_build(d))
 gt$layout$clip[gt$layout$name == "panel"] <- "off"
 
-ggsave(filename = "sites_bench.pdf",
+ggsave(filename = "./out/sites_bench.pdf",
        plot = gt,
        device = "pdf",
        width = 5,
