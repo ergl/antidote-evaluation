@@ -53,7 +53,7 @@ workload_denoms <- df_workload_rc[match(df_workload$updates, df_workload_rc$upda
 df_workload_normalized$throughput <- df_workload$throughput / workload_denoms
 
 modify_sites_plot <- ggplot(df_sites_normalized) +
-    aes(x=sites, y=throughput, color=protocol, shape=protocol) +
+    aes(x=sites, y=throughput, color=protocol, shape=protocol, linetype=protocol) +
 
     geom_vline(xintercept=3, size=1, color="#807F80") +
     geom_point(size=2.5) + geom_line() +
@@ -72,6 +72,10 @@ modify_sites_plot <- ggplot(df_sites_normalized) +
     scale_shape_discrete(name=legend_title,
                          breaks=legend_breaks,
                          labels=legend_labels) +
+
+    scale_linetype_discrete(name=legend_title,
+                            breaks=legend_breaks,
+                            labels=legend_labels) +
 
 
     labs(x = "Number of Sites") +
@@ -105,7 +109,7 @@ modify_sites_plot <- ggplot(df_sites_normalized) +
           )
 
 modify_workload_plot <- ggplot(df_workload_normalized) +
-    aes(x=updates, y=throughput, color=protocol, shape=protocol) +
+    aes(x=updates, y=throughput, color=protocol, shape=protocol, linetype=protocol) +
     geom_vline(xintercept=10, size=1, color="#807F80") +
     geom_point(size=2.5) + geom_line() +
 
@@ -122,6 +126,10 @@ modify_workload_plot <- ggplot(df_workload_normalized) +
     scale_shape_discrete(name=legend_title,
                          breaks=legend_breaks,
                          labels=legend_labels) +
+
+    scale_linetype_discrete(name=legend_title,
+                            breaks=legend_breaks,
+                            labels=legend_labels) +
 
     labs(x = "Update Transaction Fraction") +
 
