@@ -16,7 +16,7 @@ df$protocol_numeric[df$protocol == "psi"] <- 1
 df$protocol <- factor(df$protocol, levels=c("ser", "psi"))
 
 format_protocol <- function(p_n) {
-    return(ifelse(p_n == 0, "SER", "PSI"))
+    return(ifelse(p_n == 0, "naiveSER", "fastPSI"))
 }
 
 # Fancy colors
