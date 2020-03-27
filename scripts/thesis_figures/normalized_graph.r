@@ -23,7 +23,7 @@ sites_format <- function(x) {
 }
 
 workload_format <- function(x) {
-    return(format(x/100))
+    return(format(x))
 }
 
 # If using legend, use these colors
@@ -56,14 +56,18 @@ workload_denoms <- df_workload_rc[match(df_workload$updates, df_workload_rc$upda
 df_workload_normalized$throughput <- df_workload$throughput / workload_denoms
 
 modify_sites_plot <- ggplot(df_sites_normalized) +
-    aes(x=sites, y=throughput, color=protocol, shape=protocol, linetype=protocol) +
+    aes(x=factor(sites),
+        y=throughput,
+        color=protocol,
+        shape=protocol,
+        linetype=protocol,
+        group=protocol) +
 
     geom_vline(xintercept=3, size=1, color="#807F80") +
+
     geom_point(size=2.5) + geom_line() +
 
-    scale_x_continuous(breaks=1:3,
-                       labels=sites_format) +
-
+    scale_x_discrete(expand=c(0.05,0.05), labels=sites_format) +
 
     scale_y_log10() +
 
@@ -81,35 +85,29 @@ modify_sites_plot <- ggplot(df_sites_normalized) +
                             labels=legend_labels) +
 
 
-    labs(x = "Number of Sites") +
+    labs(x = "Number of Sites\n\n(a)") +
 
     theme_minimal(base_size=10) +
 
-    theme(plot.title =      element_blank(),
+    theme(plot.title = element_blank(),
           plot.margin = margin(10,10,0,0),
           axis.title.x = element_text(size=10, margin=margin(10,0,10,0)),
           axis.title.y = element_blank(),
-          axis.text.x =  element_text(color="black", size=9, margin=margin(5,0,0,0)),
-          axis.text.y =  element_text(color="black", size=9, margin=margin(0,5,0,10)),
-          axis.line =    element_line(color="black", size=0.5),
-          axis.ticks =   element_line(color="black"),
-
-          strip.text.x =    element_text(size=12),
-          strip.placement = "outside",
-
-          axis.ticks.length = unit(-1.5, "pt"),
+          axis.text.x = element_text(color="black", size=9, margin=margin(5,0,0,0)),
+          axis.text.y = element_text(color="black", size=9, margin=margin(0,5,0,10)),
+          axis.line = element_line(color="black", size=0.5),
+          axis.ticks = element_line(color="black"),
+          axis.ticks.length = unit(-2.5, "pt"),
 
           panel.grid.minor.x = element_blank(),
           panel.grid.minor.y = element_line(colour="#EBEBEB", size=0.5),
           panel.grid.major = element_line(colour="#EBEBEB", size=0.5),
-          panel.spacing =    unit(1, "lines"),
 
           legend.position = "bottom",
-          legend.direction =      "horizontal",
-          legend.title =          element_text(size=7),
-          legend.text =           element_text(size=7),
-          legend.box.background = element_rect(color="white", fill="white")
-          )
+          legend.direction = "horizontal",
+          legend.title = element_text(size=7),
+          legend.text = element_text(size=7),
+          legend.box.background = element_rect(color="white", fill="white"))
 
 modify_workload_plot <- ggplot(df_workload_normalized) +
     aes(x=updates, y=throughput, color=protocol, shape=protocol, linetype=protocol) +
@@ -134,29 +132,24 @@ modify_workload_plot <- ggplot(df_workload_normalized) +
                             breaks=legend_breaks,
                             labels=legend_labels) +
 
-    labs(x = "Update Transaction Fraction") +
+    labs(x = "Update Transactions (%)\n\n(b)") +
 
     theme_minimal(base_size=10) +
 
-    theme(plot.title =      element_blank(),
-          plot.margin = margin(0,10,0,0),
-
+    theme(plot.title = element_blank(),
+          plot.margin = margin(10,10,0,0),
           axis.title.x = element_text(size=10, margin=margin(10,0,10,0)),
           axis.title.y = element_blank(),
-          axis.text.x =  element_text(color="black", size=9, margin=margin(5,0,0,0)),
-          axis.text.y =  element_text(color="black", size=9, margin=margin(0,5,0,10)),
-          axis.line =    element_line(color="black", size=0.5),
-          axis.ticks =   element_line(color="black"),
-
-          strip.text.x =    element_text(size=12),
-          strip.placement = "outside",
-
-          axis.ticks.length = unit(-1.5, "pt"),
+          axis.text.x = element_text(color="black", size=9, margin=margin(5,0,0,0)),
+          axis.text.y = element_text(color="black", size=9, margin=margin(0,5,0,10)),
+          axis.line = element_line(color="black", size=0.5),
+          axis.ticks = element_line(color="black"),
+          axis.ticks.length = unit(-2.5, "pt"),
 
           panel.grid.minor.x = element_blank(),
           panel.grid.minor.y = element_line(colour="#EBEBEB", size=0.5),
           panel.grid.major = element_line(colour="#EBEBEB", size=0.5),
-          panel.spacing =    unit(1, "lines"),
+
           legend.position = "none")
 
 get_legend <- function(arg_plot) {
@@ -171,15 +164,18 @@ combined_legend <- get_legend(modify_sites_plot)
 combined <- grid.arrange(combined_legend,
                          arrangeGrob(modify_sites_plot + theme(legend.position = "none"),
                                      modify_workload_plot,
-                                     nrow=2,
-                                     left = textGrob("Throughput (normalized)", rot = 90, vjust=1,
+                                     nrow=1,
+                                     left = textGrob("Throughput (normalized)",
+                                                     rot=90,
+                                                     vjust=1,
+                                                     hjust=0.3,
                                                      gp=gpar(fontsize=10))),
                          nrow=2,
-                         heights=c(1,10))
+                         heights=c(1.5,11))
 
 ggsave(filename = "./out/dynamic_bench.pdf",
        plot = combined,
        device = "pdf",
-       width = 5,
-       height = 5,
+       width = 9,
+       height = 3.5,
        dpi = 600)
