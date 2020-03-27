@@ -29,14 +29,11 @@ y_format_thousand_comma <- function(x) {
 x_seq <- seq(0, 2500000, by=250000)
 y_seq <- seq(0, 50, by=5)
 
-# Classic colors
-# psi_color <- "#F67870"
-# ser_color <- "#639BFC"
-# rc_color <- "#13BA3E"
+
 # Fancy colors
-psi_color <- "#DA5F6D"
+psi_color <- "#F2818F"
 ser_color <- "#1C5BD0"
-rc_color <- "#30A84F"
+rc_color <- "#4DE481"
 # Grayscale colors
 # rc_color <- "#323232"
 # psi_color <- "#6E6E6E"

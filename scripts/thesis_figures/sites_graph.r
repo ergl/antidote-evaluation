@@ -31,14 +31,14 @@ y_format_thousand_comma <- function(x) {
 y_seq <- seq(0, 2000000, by=100000)
 
 # If using legend, use these colors
+psi_color <- "#F2818F"
 ser_color <- "#1C5BD0"
-psi_color <- "#DA5F6D"
-rc_color <- "#30A84F"
+rc_color <- "#4DE481"
 
 # Otherwise, use grayscale?
-ser_color <- "#B3B3B3"
-psi_color <- "#6E6E6E"
-rc_color <- "#323232"
+# rc_color <- "#323232"
+# psi_color <- "#6E6E6E"
+# ser_color <- "#B3B3B3"
 
 df_mapping <- aes(x=throughput, y=latency)
 legend_title <- "" # No title

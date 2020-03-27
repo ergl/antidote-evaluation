@@ -19,9 +19,12 @@ format_protocol <- function(p_n) {
     return(ifelse(p_n == 0, "SER", "PSI"))
 }
 
-# Grayscale
-ser_color <- "#BDBDBD"
-psi_color <- "#6E6E6E"
+# Fancy colors
+psi_color <- "#F2818F"
+ser_color <- "#1C5BD0"
+# Grayscale colors
+# psi_color <- "#6E6E6E"
+# ser_color <- "#B3B3B3"
 legend_title <- "" # No title
 legend_labels <- c("naiveSER", "fastPSI")
 legend_breaks <- c("ser", "psi")

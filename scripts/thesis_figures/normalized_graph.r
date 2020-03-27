@@ -27,9 +27,12 @@ workload_format <- function(x) {
 }
 
 # If using legend, use these colors
+# ser_color <- "#1C5BD0"
+# psi_color <- "#DA5F6D"
+# rc_color <- "#30A84F"
+psi_color <- "#F2818F"
 ser_color <- "#1C5BD0"
-psi_color <- "#DA5F6D"
-rc_color <- "#30A84F"
+rc_color <- "#4DE481"
 
 legend_title <- "" # No title
 legend_breaks <- c("ser", "psi", "rc")
