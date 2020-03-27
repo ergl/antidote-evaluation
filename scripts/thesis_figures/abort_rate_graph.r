@@ -24,6 +24,7 @@ ser_color <- "#BDBDBD"
 psi_color <- "#6E6E6E"
 legend_title <- "" # No title
 legend_labels <- c("naiveSER", "fastPSI")
+legend_breaks <- c("ser", "psi")
 legend_values <- c(ser_color, psi_color)
 
 plot_aborts <- function(df, title, aes_kind, ylab, ybreaks, ylim) {
@@ -45,9 +46,9 @@ plot_aborts <- function(df, title, aes_kind, ylab, ybreaks, ylim) {
               axis.text.x = element_text(color="black", size=9, margin=margin(25,0,0,0)),
               axis.text.y = element_text(color="black", size=9, margin=margin(0,8,0,3)),
 
-              strip.text.x =    element_text(size=10),
+              strip.text.x = element_text(size=10),
               strip.placement = "outside",
-              panel.spacing =    unit(1, "lines"),
+              panel.spacing = unit(1, "lines"),
 
               axis.ticks.y = element_line(color="black"),
               axis.ticks.length.y = unit(-2.75, "pt"),
@@ -62,33 +63,95 @@ plot_aborts <- function(df, title, aes_kind, ylab, ybreaks, ylim) {
     return(d)
 }
 
-workload_e <- plot_aborts(df=df[df$workload == "e", ],
-                          title="Workload E",
-                          aes_kind=aes(x=protocol_numeric, y=(1-commit_r), fill=protocol),
-                          ybreaks=seq(0,1,0.05),
-                          ylab="Abort ratio",
-                          ylim=c(0,0.4))
+plot_abort_dissect <- function(df, title, ylimits) {
+    d <- ggplot(df,
+                aes(x=factor(updates),
+                y=conflict_r,
+                linetype=protocol,
+                shape=protocol,
+                group=protocol,
+                color=protocol)) +
 
-workload_e_2pc <- plot_aborts(df=df[df$workload == "e", ],
-                             title="Workload E",
-                             aes_kind=aes(x=protocol_numeric, y=conflict_r, fill=protocol),
-                             ybreaks=seq(0,1,0.02),
-                             ylab="2PC Abort ratio",
-                             ylim=c(0,0.1))
+    geom_point(size=2.5) + geom_line() +
 
-workload_d <- plot_aborts(df=df[df$workload == "d", ],
+    scale_y_log10(limits=ylimits,
+                  labels=function(x) format(x, big.mark = ",", scientific = FALSE)) +
+
+    scale_colour_manual(name=legend_title,
+                        breaks=legend_breaks,
+                        labels=legend_labels,
+                        values=legend_values) +
+
+    scale_shape_discrete(name=legend_title,
+                         breaks=legend_breaks,
+                         labels=legend_labels) +
+
+    scale_linetype_discrete(name=legend_title,
+                            breaks=legend_breaks,
+                            labels=legend_labels) +
+
+    labs(title = title,
+         x = "Update Transactions (%)",
+         y = "Abort share")+
+
+    theme_minimal(base_size=10) +
+    theme(plot.title = element_text(color="black", size=9, hjust=1),
+          plot.margin = margin(10,20,10,10),
+
+          axis.title.x = element_text(size=10, margin=margin(0,0,-10,0)),
+          axis.title.y = element_text(size=10, margin=margin(0,5,0,10)),
+          axis.line = element_line(color="black", size=0.5),
+
+          axis.text.x = element_text(color="black", size=9, margin=margin(8,0,5,0)),
+          axis.text.y = element_text(color="black", size=9, margin=margin(0,8,0,3)),
+
+          strip.text.x = element_text(size=10),
+          strip.placement = "outside",
+          panel.spacing = unit(1, "lines"),
+
+          axis.ticks = element_line(color="black"),
+          axis.ticks.length = unit(-2.75, "pt"),
+
+          panel.grid.minor.x = element_blank(),
+          panel.grid.major.x = element_line(colour="#EBEBEB", size=0.5),
+          panel.grid.minor.y = element_blank(),
+          panel.grid.major.y = element_line(colour="#EBEBEB", size=0.5),
+
+          legend.position = "bottom",
+          legend.direction = "horizontal",
+          legend.title = element_text(size=6),
+          legend.text = element_text(size=6),
+          legend.box.just = "left",
+          legend.box.background = element_rect(color="white", fill="white"))
+
+    return(d)
+}
+
+df_d <- df[df$workload == "d", ]
+df_e <- df[df$workload == "e", ]
+
+workload_d <- plot_aborts(df=df_d,
                           title="Workload D",
                           aes_kind=aes(x=protocol_numeric, y=(1-commit_r), fill=protocol),
                           ybreaks=seq(0,1,0.05),
                           ylab="Abort ratio",
                           ylim=c(0,0.4))
 
-workload_d_2pc <- plot_aborts(df=df[df$workload == "d", ],
-                              title="Workload D",
-                              aes_kind=aes(x=protocol_numeric, y=conflict_r, fill=protocol),
-                              ybreaks=seq(0,1,0.2),
-                              ylab="2PC Abort ratio",
-                              ylim=c(0,1))
+workload_e <- plot_aborts(df=df_e,
+                          title="Workload E",
+                          aes_kind=aes(x=protocol_numeric, y=(1-commit_r), fill=protocol),
+                          ybreaks=seq(0,1,0.05),
+                          ylab="Abort ratio",
+                          ylim=c(0,0.4))
+
+workload_d_2pc <- plot_abort_dissect(df=df_d,
+                                     title="Workload D, aborts during validation",
+                                     ylimits=c(0.003,1.01))
+
+workload_e_2pc <- plot_abort_dissect(df=df_e,
+                                     title="Workload E, aborts during validation",
+                                     ylimits=c(0.006,0.09))
+
 
 easy_annotation <- function(text, x, y) {
     return(annotation_custom(grob=text, xmin=x, xmax=x, ymin=y, ymax=y))
@@ -116,20 +179,6 @@ workload_d <- workload_d +
     easy_annotation(text=ann_40,    x=0.175,    y=-0.06) +
     easy_annotation(text=ann_50,    x=0.325,    y=-0.06)
 
-workload_e_2pc <- workload_e_2pc +
-    easy_annotation(text=ann_10,    x=-0.3,     y=-0.015) +
-    easy_annotation(text=ann_20,    x=-0.15,    y=-0.015) +
-    easy_annotation(text=ann_30,    x=0.015,    y=-0.015) +
-    easy_annotation(text=ann_40,    x=0.175,    y=-0.015) +
-    easy_annotation(text=ann_50,    x=0.325,    y=-0.015)
-
-workload_d_2pc <- workload_d_2pc +
-    easy_annotation(text=ann_10,    x=-0.3,     y=-0.15) +
-    easy_annotation(text=ann_20,    x=-0.15,    y=-0.15) +
-    easy_annotation(text=ann_30,    x=0.015,    y=-0.15) +
-    easy_annotation(text=ann_40,    x=0.175,    y=-0.15) +
-    easy_annotation(text=ann_50,    x=0.325,    y=-0.15)
-
 gt_e <- ggplot_gtable(ggplot_build(workload_e))
 gt_e_2pc <- ggplot_gtable(ggplot_build(workload_e_2pc))
 
@@ -143,7 +192,7 @@ gt_d$layout$clip[gt_d$layout$name == "panel"] <- "off"
 gt_d_2pc$layout$clip[gt_d_2pc$layout$name == "panel"] <- "off"
 
 combined_d <- grid.arrange(gt_d, gt_d_2pc, nrow=2, heights=c(5,5))
-combined_e <- grid.arrange(gt_e, gt_e_2pc, nrow=2, heights=c(5,5))
+combined_e <- grid.arrange(gt_e, gt_e_2pc, nrow=2, heights=c(1,1))
 combined <- grid.arrange(combined_d, combined_e, ncol=2, widths=c(5,5))
 
 ggsave(filename = "./out/abort_rate_bench.pdf",
