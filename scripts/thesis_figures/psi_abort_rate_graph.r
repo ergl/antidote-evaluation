@@ -14,7 +14,6 @@ for(p in packages.to.install) {
 
 df <- read.csv("../../read_aborts/psi_read_abort.csv")
 
-pdf(file = "./out/psi_read_abort_bench.pdf", width = 15, height = 4)
 
 partitions <- ggplot(df[df$exp == "p", ]) +
     geom_bar(aes(x=factor(ring), y=(1-commit_r)), colour="black", size=0.25, width=0.8, position="dodge2", stat="identity") +
@@ -106,13 +105,14 @@ read_keys <- ggplot(df[df$exp == "rk", ]) +
 
               legend.position = "none")
 
-grid.newpage()
+gt_ring <- ggplot_gtable(ggplot_build(partitions))
+gt_written <- ggplot_gtable(ggplot_build(written_keys))
+gt_read <- ggplot_gtable(ggplot_build(read_keys))
+combined <- grid.arrange(gt_ring, gt_written, gt_read, ncol=3, widths=c(1,1,1))
 
-pushViewport(viewport(layout = grid.layout(1, 3)))
-
-vplayout <- function(x,y) viewport(layout.pos.row = x, layout.pos.col = y)
-print(partitions, vp = vplayout(1,1))
-print(written_keys, vp = vplayout(1,2))
-print(read_keys, vp = vplayout(1,3))
-
-dev.off()
+ggsave(filename = "./out/psi_read_abort_bench.pdf",
+       plot = combined,
+       device = "pdf",
+       width = 15,
+       height = 4,
+       dpi = 600)
