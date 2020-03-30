@@ -95,7 +95,7 @@ plot_abort_dissect <- function(df, title, ylimits) {
 
     labs(title = title,
          x = "Update Transactions (%)",
-         y = "Abort share")+
+         y = "Abort ratio")+
 
     theme_minimal(base_size=10) +
     theme(plot.title = element_text(color="black", size=9, hjust=1),
