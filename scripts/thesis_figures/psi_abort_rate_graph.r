@@ -14,9 +14,9 @@ for(p in packages.to.install) {
 
 df <- read.csv("../../read_aborts/psi_read_abort.csv")
 
-
+psi_color <- "#F2818F"
 partitions <- ggplot(df[df$exp == "p", ]) +
-    geom_bar(aes(x=factor(ring), y=(1-commit_r)), colour="black", size=0.25, width=0.8, position="dodge2", stat="identity") +
+    geom_bar(aes(x=factor(ring), y=(1-commit_r)), fill=psi_color, colour="black", size=0.25, width=0.8, position="dodge2", stat="identity") +
     scale_y_continuous(breaks=seq(0,1,0.1), expand=c(0,0), sec.axis=dup_axis(name=NULL, labels=NULL)) +
     labs(title="Partitions number effect on abort ratio", x="Partitions", y="Abort ratio") +
     coord_cartesian(ylim=c(0,1.0025)) +
@@ -46,7 +46,7 @@ partitions <- ggplot(df[df$exp == "p", ]) +
               legend.position = "none")
 
 written_keys <- ggplot(df[df$exp == "wk", ]) +
-    geom_bar(aes(x=factor(write_keys), y=(1-commit_r)), colour="black", size=0.25, width=0.8, position="dodge2", stat="identity") +
+    geom_bar(aes(x=factor(write_keys), y=(1-commit_r)), fill=psi_color, colour="black", size=0.25, width=0.8, position="dodge2", stat="identity") +
     scale_y_continuous(breaks=seq(0,1,0.1), expand=c(0,0), sec.axis=dup_axis(name=NULL, labels=NULL)) +
     labs(title="Written keys effect on abort ratio", x="Written Keys", y="Abort ratio") +
     coord_cartesian(ylim=c(0,0.301)) +
@@ -76,7 +76,7 @@ written_keys <- ggplot(df[df$exp == "wk", ]) +
               legend.position = "none")
 
 read_keys <- ggplot(df[df$exp == "rk", ]) +
-    geom_bar(aes(x=factor(read_keys), y=(1-commit_r)), colour="black", size=0.25, width=0.8, position="dodge2", stat="identity") +
+    geom_bar(aes(x=factor(read_keys), y=(1-commit_r)), fill=psi_color, colour="black", size=0.25, width=0.8, position="dodge2", stat="identity") +
     scale_y_continuous(breaks=seq(0,1,0.025), expand=c(0,0), sec.axis=dup_axis(name=NULL, labels=NULL)) +
     labs(title="Read keys effect on abort ratio", x="Read Keys", y="Abort ratio") +
     coord_cartesian(ylim=c(0,0.301)) +
