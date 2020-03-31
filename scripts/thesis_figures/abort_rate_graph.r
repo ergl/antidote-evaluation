@@ -66,7 +66,7 @@ plot_aborts <- function(df, title, aes_kind, ylab, ybreaks, ylim) {
     return(d)
 }
 
-plot_abort_dissect <- function(df, title, ylimits) {
+plot_abort_dissect <- function(df, title, ylimits, ybreaks=NULL) {
     d <- ggplot(df,
                 aes(x=factor(updates),
                 y=conflict_r,
@@ -78,6 +78,7 @@ plot_abort_dissect <- function(df, title, ylimits) {
     geom_point(size=2.5) + geom_line() +
 
     scale_y_log10(limits=ylimits,
+                  breaks=ybreaks,
                   labels=function(x) format(x, big.mark = ",", scientific = FALSE)) +
 
     scale_colour_manual(name=legend_title,
@@ -95,7 +96,7 @@ plot_abort_dissect <- function(df, title, ylimits) {
 
     labs(title = title,
          x = "Update Transactions (%)",
-         y = "Abort ratio")+
+         y = "Abort ratio (log)")+
 
     theme_minimal(base_size=10) +
     theme(plot.title = element_text(color="black", size=9, hjust=1),
@@ -134,14 +135,14 @@ df_d <- df[df$workload == "d", ]
 df_e <- df[df$workload == "e", ]
 
 workload_d <- plot_aborts(df=df_d,
-                          title="Workload D",
+                          title="Workload D, overall abort rate",
                           aes_kind=aes(x=protocol_numeric, y=(1-commit_r), fill=protocol),
                           ybreaks=seq(0,1,0.05),
                           ylab="Abort ratio",
                           ylim=c(0,0.4))
 
 workload_e <- plot_aborts(df=df_e,
-                          title="Workload E",
+                          title="Workload E, overall abort rate",
                           aes_kind=aes(x=protocol_numeric, y=(1-commit_r), fill=protocol),
                           ybreaks=seq(0,1,0.05),
                           ylab="Abort ratio",
@@ -149,11 +150,13 @@ workload_e <- plot_aborts(df=df_e,
 
 workload_d_2pc <- plot_abort_dissect(df=df_d,
                                      title="Workload D, aborts during validation",
-                                     ylimits=c(0.003,1.01))
+                                     ylimits=c(0.003,1.01),
+                                     ybreaks=c(0.005, 0.01, 0.025, 0.05, 0.1, 1))
 
 workload_e_2pc <- plot_abort_dissect(df=df_e,
                                      title="Workload E, aborts during validation",
-                                     ylimits=c(0.006,0.09))
+                                     ylimits=c(0.003,1.01),
+                                     ybreaks=c(0.005, 0.01, 0.025, 0.05, 0.1, 1))
 
 
 easy_annotation <- function(text, x, y) {
@@ -194,13 +197,19 @@ gt_d_2pc <- ggplot_gtable(ggplot_build(workload_d_2pc))
 gt_d$layout$clip[gt_d$layout$name == "panel"] <- "off"
 gt_d_2pc$layout$clip[gt_d_2pc$layout$name == "panel"] <- "off"
 
-combined_d <- grid.arrange(gt_d, gt_d_2pc, nrow=2, heights=c(5,5))
-combined_e <- grid.arrange(gt_e, gt_e_2pc, nrow=2, heights=c(1,1))
-combined <- grid.arrange(combined_d, combined_e, ncol=2, widths=c(5,5))
+combined_overall <- grid.arrange(gt_d, gt_e, ncol=2, widths=c(1,1))
+combined_2pc <- grid.arrange(gt_d_2pc, gt_e_2pc, ncol=2, widths=c(1,1))
 
-ggsave(filename = "./out/abort_rate_bench.pdf",
-       plot = combined,
+ggsave(filename = "./out/abort_rate_bench_overall.pdf",
+       plot = combined_overall,
        device = "pdf",
-       width = 5,
-       height = 4,
+       width = 6,
+       height = 2.5,
+       dpi = 600)
+
+ggsave(filename = "./out/abort_rate_bench_2pc.pdf",
+       plot = combined_2pc,
+       device = "pdf",
+       width = 6,
+       height = 3,
        dpi = 600)
