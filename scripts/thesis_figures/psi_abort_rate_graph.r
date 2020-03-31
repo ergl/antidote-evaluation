@@ -18,92 +18,104 @@ psi_color <- "#F2818F"
 partitions <- ggplot(df[df$exp == "p", ]) +
     geom_bar(aes(x=factor(ring), y=(1-commit_r)), fill=psi_color, colour="black", size=0.25, width=0.8, position="dodge2", stat="identity") +
     scale_y_continuous(breaks=seq(0,1,0.1), expand=c(0,0), sec.axis=dup_axis(name=NULL, labels=NULL)) +
-    labs(title="Partitions number effect on abort ratio", x="Partitions\n\n(c)", y="Abort ratio") +
+    labs(title="Partitions number effect on abort ratio",
+        subtitle="4 reads / 4 writes",
+        x="Partitions\n\n(c)",
+        y="Abort ratio") +
     coord_cartesian(ylim=c(0,1.001)) +
     theme_minimal(base_size=10) +
     theme(plot.title = element_text(color="black", size=9, hjust=1),
-              plot.margin = margin(10,20,10,10),
-              panel.border = element_rect(colour = "black", fill=NA, size=0.5),
+          plot.subtitle = element_text(color="black", size=8, hjust=1),
+          plot.margin = margin(10,20,10,10),
+          panel.border = element_rect(colour = "black", fill=NA, size=0.5),
 
-              axis.title.x = element_text(size=10, margin=margin(0,5,0,10)),
-              axis.title.y = element_text(size=10, margin=margin(0,5,0,10)),
+          axis.title.x = element_text(size=10, margin=margin(0,5,0,10)),
+          axis.title.y = element_text(size=10, margin=margin(0,5,0,10)),
 
-              axis.text.x = element_text(color="black", size=9, margin=margin(5,0,8,0)),
-              axis.text.y = element_text(color="black", size=9, margin=margin(0,8,0,3)),
+          axis.text.x = element_text(color="black", size=9, margin=margin(5,0,8,0)),
+          axis.text.y = element_text(color="black", size=9, margin=margin(0,8,0,3)),
 
-              strip.text.x =    element_text(size=10),
-              strip.placement = "outside",
-              panel.spacing =    unit(1, "lines"),
+          strip.text.x =    element_text(size=10),
+          strip.placement = "outside",
+          panel.spacing =    unit(1, "lines"),
 
-              axis.ticks.y = element_line(color="black"),
-              axis.ticks.length.y = unit(-2.75, "pt"),
+          axis.ticks.y = element_line(color="black"),
+          axis.ticks.length.y = unit(-2.75, "pt"),
 
-              panel.grid.major.x = element_blank(),
-              panel.grid.minor.x = element_blank(),
-              panel.grid.minor.y = element_blank(),
-              panel.grid.major.y = element_line(colour="#EBEBEB", size=0.5),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor.x = element_blank(),
+          panel.grid.minor.y = element_blank(),
+          panel.grid.major.y = element_line(colour="#EBEBEB", size=0.5),
 
-              legend.position = "none")
+          legend.position = "none")
 
 written_keys <- ggplot(df[df$exp == "wk", ]) +
     geom_bar(aes(x=factor(write_keys), y=(1-commit_r)), fill=psi_color, colour="black", size=0.25, width=0.8, position="dodge2", stat="identity") +
     scale_y_continuous(breaks=seq(0,1,0.1), expand=c(0,0), sec.axis=dup_axis(name=NULL, labels=NULL)) +
-    labs(title="Written keys effect on abort ratio", x="Written Keys\n\n(b)", y="Abort ratio") +
+    labs(title="Written keys effect on abort ratio",
+         subtitle="4 reads / 64 partitions",
+         x="Written Keys\n\n(b)",
+         y="Abort ratio") +
     coord_cartesian(ylim=c(0,0.3001)) +
     theme_minimal(base_size=10) +
     theme(plot.title = element_text(color="black", size=9, hjust=1),
-              plot.margin = margin(10,20,10,10),
-              panel.border = element_rect(colour = "black", fill=NA, size=0.5),
+          plot.subtitle = element_text(color="black", size=8, hjust=1),
+          plot.margin = margin(10,20,10,10),
+          panel.border = element_rect(colour = "black", fill=NA, size=0.5),
 
-              axis.title.x = element_text(size=10, margin=margin(0,5,0,10)),
-              axis.title.y = element_text(size=10, margin=margin(0,5,0,10)),
+          axis.title.x = element_text(size=10, margin=margin(0,5,0,10)),
+          axis.title.y = element_text(size=10, margin=margin(0,5,0,10)),
 
-              axis.text.x = element_text(color="black", size=9, margin=margin(5,0,8,0)),
-              axis.text.y = element_text(color="black", size=9, margin=margin(0,8,0,3)),
+          axis.text.x = element_text(color="black", size=9, margin=margin(5,0,8,0)),
+          axis.text.y = element_text(color="black", size=9, margin=margin(0,8,0,3)),
 
-              strip.text.x =    element_text(size=10),
-              strip.placement = "outside",
-              panel.spacing =    unit(1, "lines"),
+          strip.text.x =    element_text(size=10),
+          strip.placement = "outside",
+          panel.spacing =    unit(1, "lines"),
 
-              axis.ticks.y = element_line(color="black"),
-              axis.ticks.length.y = unit(-2.75, "pt"),
+          axis.ticks.y = element_line(color="black"),
+          axis.ticks.length.y = unit(-2.75, "pt"),
 
-              panel.grid.major.x = element_blank(),
-              panel.grid.minor.x = element_blank(),
-              panel.grid.minor.y = element_blank(),
-              panel.grid.major.y = element_line(colour="#EBEBEB", size=0.5),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor.x = element_blank(),
+          panel.grid.minor.y = element_blank(),
+          panel.grid.major.y = element_line(colour="#EBEBEB", size=0.5),
 
-              legend.position = "none")
+          legend.position = "none")
 
 read_keys <- ggplot(df[df$exp == "rk", ]) +
     geom_bar(aes(x=factor(read_keys), y=(1-commit_r)), fill=psi_color, colour="black", size=0.25, width=0.8, position="dodge2", stat="identity") +
     scale_y_continuous(breaks=seq(0,1,0.025), expand=c(0,0), sec.axis=dup_axis(name=NULL, labels=NULL)) +
-    labs(title="Read keys effect on abort ratio", x="Read Keys\n\n(a)", y="Abort ratio") +
+    labs(title="Read keys effect on abort ratio (Two keys written) ",
+         subtitle="2 writes / 64 partitions",
+         x="Read Keys\n\n(a)",
+         y="Abort ratio") +
     coord_cartesian(ylim=c(0,0.3001)) +
     theme_minimal(base_size=10) +
     theme(plot.title = element_text(color="black", size=9, hjust=1),
-              plot.margin = margin(10,20,10,10),
-              panel.border = element_rect(colour = "black", fill=NA, size=0.5),
+          plot.subtitle = element_text(color="black", size=8, hjust=1),
+          plot.margin = margin(10,20,10,10),
+          panel.border = element_rect(colour = "black", fill=NA, size=0.5),
 
-              axis.title.x = element_text(size=10, margin=margin(0,5,0,10)),
-              axis.title.y = element_text(size=10, margin=margin(0,5,0,10)),
+          axis.title.x = element_text(size=10, margin=margin(0,5,0,10)),
+          axis.title.y = element_text(size=10, margin=margin(0,5,0,10)),
 
-              axis.text.x = element_text(color="black", size=9, margin=margin(5,0,8,0)),
-              axis.text.y = element_text(color="black", size=9, margin=margin(0,8,0,3)),
+          axis.text.x = element_text(color="black", size=9, margin=margin(5,0,8,0)),
+          axis.text.y = element_text(color="black", size=9, margin=margin(0,8,0,3)),
 
-              strip.text.x =    element_text(size=10),
-              strip.placement = "outside",
-              panel.spacing =    unit(1, "lines"),
+          strip.text.x =    element_text(size=10),
+          strip.placement = "outside",
+          panel.spacing =    unit(1, "lines"),
 
-              axis.ticks.y = element_line(color="black"),
-              axis.ticks.length.y = unit(-2.75, "pt"),
+          axis.ticks.y = element_line(color="black"),
+          axis.ticks.length.y = unit(-2.75, "pt"),
 
-              panel.grid.major.x = element_blank(),
-              panel.grid.minor.x = element_blank(),
-              panel.grid.minor.y = element_blank(),
-              panel.grid.major.y = element_line(colour="#EBEBEB", size=0.5),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor.x = element_blank(),
+          panel.grid.minor.y = element_blank(),
+          panel.grid.major.y = element_line(colour="#EBEBEB", size=0.5),
 
-              legend.position = "none")
+          legend.position = "none")
 
 gt_ring <- ggplot_gtable(ggplot_build(partitions))
 gt_written <- ggplot_gtable(ggplot_build(written_keys))
@@ -112,15 +124,6 @@ gt_read <- ggplot_gtable(ggplot_build(read_keys))
 gt_ring$layout$clip[gt_ring$layout$name == "panel"] <- "off"
 gt_written$layout$clip[gt_written$layout$name == "panel"] <- "off"
 gt_read$layout$clip[gt_read$layout$name == "panel"] <- "off"
-
-# top_row <- grid.arrange(gt_read, gt_written, ncol=2, widths=c(1,1))
-# combined <- grid.arrange(top_row, gt_ring, nrow=2, heights=c(1,1))
-# ggsave(filename = "./out/psi_read_abort_bench.pdf",
-#        plot = combined,
-#        device = "pdf",
-#        width = 6,
-#        height = 5,
-#        dpi = 600)
 
 combined <- grid.arrange(gt_read, gt_written, gt_ring, ncol=3, widths=c(1,1,1))
 ggsave(filename = "./out/psi_read_abort_bench.pdf",
