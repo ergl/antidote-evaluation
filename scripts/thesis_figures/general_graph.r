@@ -5,6 +5,7 @@ packages.to.install <- c("lemon",
                          "grid",
                          "getopt",
                          "proto",
+                         "gridExtra",
                          "ggplot2",
                          "scales")
 
@@ -93,7 +94,7 @@ d <- ggplot(df) +
 
     theme_minimal(base_size=10) +
 
-    theme(plot.title =      element_text(size=13, margin=margin(10,0,10,0), hjust=0.5),
+    theme(plot.title = element_text(size=14, margin=margin(10,0,10,0), hjust=0.5),
           plot.margin = margin(0,10,0,0),
 
           axis.title.x = element_text(size=12, margin=margin(10,0,10,0)),
@@ -112,17 +113,28 @@ d <- ggplot(df) +
           panel.grid.major = element_line(colour="#EBEBEB", size=0.25),
           panel.spacing =    unit(1, "lines"),
 
-          legend.spacing =        unit(-0.2, "cm"),
-          legend.position =       c(0.17, 0.15),
           legend.direction =      "horizontal",
-          legend.title =          element_text(size=9),
-          legend.text =           element_text(size=9),
+          legend.title =          element_blank(),
+          legend.text =           element_text(size=11),
+          legend.margin = margin(0,0,10,0),
           legend.box.just =       "left",
           legend.box.background = element_rect(color="white", fill="white"))
 
+get_legend <- function(arg_plot) {
+    tmp <- ggplot_gtable(ggplot_build(arg_plot))
+    leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+    legend <- tmp$grobs[[leg]]
+    return(legend)
+}
+
+combined_legend <- get_legend(d)
+combined <- grid.arrange(d + theme(legend.position = "none"),
+                        combined_legend,
+                         heights=c(15,1.5))
+
 ggsave(filename = "./out/general_bench.pdf",
-       plot = d,
+       plot = combined,
        device = "pdf",
        width = 12,
-       height = 3.5,
+       height = 4.5,
        dpi = 600)
